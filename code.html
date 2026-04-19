@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STOCKSENSE AI - Smart Trading Education Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #00ff9d;
+  --secondary: #00e0ff;
+  --accent: #ff0099;
+  --bg-dark: #0a0e1a;
+  --bg-darker: #050810;
+  --bg-card: rgba(15, 23, 42, 0.6);
+  --text-primary: #ffffff;
+  --text-secondary: #a8b8d8;
+  --text-muted: #6b7a99;
+  --border: rgba(0, 255, 157, 0.1);
+  --glow: rgba(0, 255, 157, 0.3);
+  --warning: #ffd700;
+  --danger: #ff3366;
+}
+
+html, body {
+  background: var(--bg-darker);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Animated background gradient */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(0, 255, 157, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 224, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(255, 0, 153, 0.05) 0%, transparent 50%);
+  z-index: 0;
+  pointer-events: none;
+  animation: gradientShift 20s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Grid pattern overlay */
+.grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(0, 255, 157, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 157, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ========== NAVIGATION ========== */
+nav {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 3rem;
+  background: rgba(10, 14, 26, 0.8);
+  backdrop-filter: blur(20px) saturate(150%);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.logo::after {
+  content: 'AI';
+  position: absolute;
+  right: -25px;
+  top: -8px;
+  font-size: 0.6rem;
+  background: var(--accent);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  filter: brightness(1.2);
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-family: 'DM Sans', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 157, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.nav-link:hover::before {
+  left: 100%;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--primary);
+  background: rgba(0, 255, 157, 0.05);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.nav-cta {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--bg-dark);
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
+  transition: all 0.3s ease;
+}
+
+.nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 255, 157, 0.4);
+}
+
+/* ========== TICKER ========== */
+.ticker {
+  background: rgba(0, 255, 157, 0.03);
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-track {
+  display: flex;
+  animation: tickerScroll 40s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 3rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+}
+
+.ticker-symbol {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.ticker-price {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.ticker-change {
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.ticker-change.up {
+  color: var(--primary);
+  background: rgba(0, 255, 157, 0.1);
+}
+
+.ticker-change.down {
+  color: var(--danger);
+  background: rgba(255, 51, 102, 0.1);
+}
+
+/* ========== PAGES ========== */
+.pages {
+  flex: 1;
+  position: relative;
+}
+
+.page {
+  display: none;
+  padding: 3rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.page.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== HOME PAGE ========== */
+.hero {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.hero-content {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 255, 157, 0.1);
+  border: 1px solid rgba(0, 255, 157, 0.3);
+  color: var(--primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 255, 157, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(0, 255, 157, 0);
+  }
+}
+
+.badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, var(--primary) 50%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-description {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+  max-width: 500px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--bg-dark);
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 255, 157, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  transition: left 0.4s ease;
+  z-index: -1;
+}
+
+.btn-secondary:hover::before {
+  left: 0;
+}
+
+.btn-secondary:hover {
+  color: var(--bg-dark);
+  border-color: var(--primary);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.stat-card:hover::before {
+  transform: translateX(100%);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 255, 157, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 255, 157, 0.15);
+}
+
+.stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+/* Chart Card */
+.chart-section {
+  animation: slideInRight 0.8s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.chart-symbol {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+#homeChart {
+  width: 100%;
+  height: 140px;
+  margin: 1rem 0;
+}
+
+.price-display {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.price-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.price-change {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.price-change.positive {
+  color: var(--primary);
+}
+
+.price-change.negative {
+  color: var(--danger);
+}
+
+/* Feature Mini Cards */
+.features-mini {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.feature-mini {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(0, 255, 157, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.feature-mini:hover {
+  border-color: rgba(0, 255, 157, 0.25);
+  transform: translateY(-3px);
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.feature-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.feature-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ========== COURSES PAGE ========== */
+.page-header {
+  max-width: 1400px;
+  margin: 0 auto 3rem;
+}
+
+.page-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+}
+
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.page-title .highlight {
+  color: var(--primary);
+}
+
+.page-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  max-width: 600px;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.course-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.course-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(0, 255, 157, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 255, 157, 0.2);
+}
+
+.course-image {
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  background: linear-gradient(135deg, rgba(0, 255, 157, 0.1), rgba(0, 224, 255, 0.1));
+  position: relative;
+  overflow: hidden;
+}
+
+.course-image::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.course-body {
+  padding: 1.5rem;
+}
+
+.course-level {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.course-level.beginner {
+  background: rgba(0, 255, 157, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(0, 255, 157, 0.3);
+}
+
+.course-level.intermediate {
+  background: rgba(255, 215, 0, 0.1);
+  color: var(--warning);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.course-level.advanced {
+  background: rgba(255, 51, 102, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(255, 51, 102, 0.3);
+}
+
+.course-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.8rem;
+  line-height: 1.3;
+}
+
+.course-description {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+.course-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.course-button {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(0, 255, 157, 0.1), rgba(0, 224, 255, 0.1));
+  border: 1px solid rgba(0, 255, 157, 0.2);
+  color: var(--primary);
+  padding: 0.8rem;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.course-button:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 157, 0.2), rgba(0, 224, 255, 0.2));
+  border-color: rgba(0, 255, 157, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 255, 157, 0.2);
+}
+
+/* ========== SIMULATOR PAGE ========== */
+.simulator-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.panel-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+#simChart {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 1.5rem;
+}
+
+.sim-tabs {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.sim-tab {
+  flex: 1;
+  background: rgba(0, 255, 157, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 0.8rem;
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.sim-tab:hover {
+  border-color: rgba(0, 255, 157, 0.3);
+  background: rgba(0, 255, 157, 0.08);
+}
+
+.sim-tab.active {
+  background: rgba(0, 255, 157, 0.15);
+  border-color: rgba(0, 255, 157, 0.4);
+  color: var(--primary);
+}
+
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-input {
+  background: rgba(0, 255, 157, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: rgba(0, 255, 157, 0.4);
+  box-shadow: 0 0 0 3px rgba(0, 255, 157, 0.1);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.btn-buy {
+  background: linear-gradient(135deg, var(--primary), #00c878);
+  color: var(--bg-dark);
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
+}
+
+.btn-buy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 255, 157, 0.4);
+}
+
+.btn-sell {
+  background: linear-gradient(135deg, var(--danger), #cc0033);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+}
+
+.btn-sell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 51, 102, 0.4);
+}
+
+/* Portfolio Panel */
+.portfolio-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.portfolio-item {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(0, 255, 157, 0.08);
+  border-radius: 12px;
+  padding: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.portfolio-item:hover {
+  border-color: rgba(0, 255, 157, 0.2);
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.portfolio-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.portfolio-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.portfolio-subtext {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--primary);
+  margin-top: 0.3rem;
+}
+
+/* ========== AI CHAT PAGE ========== */
+.chat-container {
+  max-width: 900px;
+  margin: 0 auto;
+  height: calc(100vh - 300px);
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  backdrop-filter: blur(10px);
+}
+
+.message {
+  max-width: 70%;
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
+  line-height: 1.6;
+  animation: messageSlide 0.3s ease-out;
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--bg-dark);
+  font-weight: 500;
+}
+
+.message.ai {
+  align-self: flex-start;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  max-width: 70px;
+  align-self: flex-start;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+.chat-input-area {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.chat-input-wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.chat-input {
+  flex: 1;
+  background: rgba(0, 255, 157, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.chat-input:focus {
+  border-color: rgba(0, 255, 157, 0.4);
+  box-shadow: 0 0 0 3px rgba(0, 255, 157, 0.1);
+}
+
+.chat-send {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--bg-dark);
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
+}
+
+.chat-send:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 255, 157, 0.4);
+}
+
+/* ========== TOAST ========== */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--bg-card);
+  border: 1px solid rgba(0, 255, 157, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  animation: toastSlide 0.3s ease-out;
+  z-index: 1000;
+}
+
+@keyframes toastSlide {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-darker);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 157, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 157, 0.5);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1200px) {
+  .courses-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  nav {
+    padding: 1rem 1.5rem;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .courses-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .simulator-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<div class="grid-overlay"></div>
+<div id="app">
+  <!-- Navigation -->
+  <nav>
+    <div class="logo" onclick="switchPage('home')">STOCKSENSE</div>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="switchPage('home')">Home</button>
+      <button class="nav-link" onclick="switchPage('courses')">Courses</button>
+      <button class="nav-link" onclick="switchPage('simulator')">Simulator</button>
+      <button class="nav-link" onclick="switchPage('chat')">AI Chat</button>
+      <button class="nav-link nav-cta">Get Pro</button>
+    </div>
+  </nav>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker-track" id="ticker">
+      <!-- Generated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Pages Container -->
+  <div class="pages">
+    
+    <!-- HOME PAGE -->
+    <div class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-content">
+          <div class="badge">
+            <span>LIVE TRADING INSIGHTS</span>
+          </div>
+          <h1>
+            Master the <span class="gradient-text">Stock Market</span> with AI-Powered Learning
+          </h1>
+          <p class="hero-description">
+            Learn trading strategies, practice with our realistic simulator, and get AI-powered insights to make smarter investment decisions. Join 12,500+ successful traders.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-primary" onclick="switchPage('courses')">Start Learning</button>
+            <button class="btn-secondary" onclick="switchPage('simulator')">Try Simulator</button>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="stat-1">0</div>
+              <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-2">0</div>
+              <div class="stat-label">Courses</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-3">0%</div>
+              <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-4">₹0</div>
+              <div class="stat-label">Trade Volume</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-section">
+          <div class="chart-card">
+            <div class="chart-header">
+              <span class="chart-symbol">NIFTY 50</span>
+              <div class="live-indicator">
+                <span class="live-dot"></span>
+                LIVE
+              </div>
+            </div>
+            <canvas id="homeChart"></canvas>
+            <div class="price-display">
+              <span class="price-value" id="homePrice">22,420</span>
+              <span class="price-change positive" id="homeChange">▲ +0 (+0.00%)</span>
+            </div>
+          </div>
+
+          <div class="features-mini">
+            <div class="feature-mini">
+              <div class="feature-icon">🎯</div>
+              <div class="feature-title">AI Analysis</div>
+              <div class="feature-desc">Real-time market insights powered by advanced algorithms</div>
+            </div>
+            <div class="feature-mini">
+              <div class="feature-icon">📊</div>
+              <div class="feature-title">Live Charts</div>
+              <div class="feature-desc">Track market movements with interactive visualizations</div>
+            </div>
+            <div class="feature-mini">
+              <div class="feature-icon">🏆</div>
+              <div class="feature-title">Expert Tips</div>
+              <div class="feature-desc">Learn from professional traders and analysts</div>
+            </div>
+            <div class="feature-mini">
+              <div class="feature-icon">🔒</div>
+              <div class="feature-title">Risk Free</div>
+              <div class="feature-desc">Practice with virtual money before going live</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COURSES PAGE -->
+    <div class="page" id="page-courses">
+      <div class="page-header">
+        <div class="page-tag">EDUCATION HUB</div>
+        <h2 class="page-title">Learn & Grow with <span class="highlight">Expert Courses</span></h2>
+        <p class="page-description">
+          From beginner fundamentals to advanced strategies, our comprehensive courses are designed to transform you into a confident trader.
+        </p>
+      </div>
+
+      <div class="courses-grid">
+        <div class="course-card">
+          <div class="course-image">📈</div>
+          <div class="course-body">
+            <span class="course-level beginner">BEGINNER</span>
+            <h3 class="course-title">Stock Market Fundamentals</h3>
+            <p class="course-description">
+              Master the basics of stock trading, market mechanics, and essential terminology to start your journey.
+            </p>
+            <div class="course-meta">
+              <span>12 Modules</span>
+              <span>8 Hours</span>
+            </div>
+            <button class="course-button">Enroll Now →</button>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-image">📊</div>
+          <div class="course-body">
+            <span class="course-level beginner">BEGINNER</span>
+            <h3 class="course-title">Technical Analysis Basics</h3>
+            <p class="course-description">
+              Learn to read charts, identify patterns, and use technical indicators for better trading decisions.
+            </p>
+            <div class="course-meta">
+              <span>15 Modules</span>
+              <span>10 Hours</span>
+            </div>
+            <button class="course-button">Enroll Now →</button>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-image">💹</div>
+          <div class="course-body">
+            <span class="course-level intermediate">INTERMEDIATE</span>
+            <h3 class="course-title">Options & Derivatives</h3>
+            <p class="course-description">
+              Dive into options trading, futures contracts, and advanced derivative strategies for portfolio growth.
+            </p>
+            <div class="course-meta">
+              <span>18 Modules</span>
+              <span>14 Hours</span>
+            </div>
+            <button class="course-button">Enroll Now →</button>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-image">🧠</div>
+          <div class="course-body">
+            <span class="course-level intermediate">INTERMEDIATE</span>
+            <h3 class="course-title">Trading Psychology</h3>
+            <p class="course-description">
+              Master emotional discipline, risk management, and the mental framework for consistent trading success.
+            </p>
+            <div class="course-meta">
+              <span>10 Modules</span>
+              <span>6 Hours</span>
+            </div>
+            <button class="course-button">Enroll Now →</button>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-image">🎯</div>
+          <div class="course-body">
+            <span class="course-level advanced">ADVANCED</span>
+            <h3 class="course-title">Algorithmic Trading</h3>
+            <p class="course-description">
+              Build automated trading systems using Python, backtesting strategies, and quantitative analysis.
+            </p>
+            <div class="course-meta">
+              <span>22 Modules</span>
+              <span>18 Hours</span>
+            </div>
+            <button class="course-button">Enroll Now →</button>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-image">💎</div>
+          <div class="course-body">
+            <span class="course-level advanced">ADVANCED</span>
+            <h3 class="course-title">Portfolio Management</h3>
+            <p class="course-description">
+              Learn advanced portfolio optimization, asset allocation, and wealth management strategies.
+            </p>
+            <div class="course-meta">
+              <span>16 Modules</span>
+              <span>12 Hours</span>
+            </div>
+            <button class="course-button">Enroll Now →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMULATOR PAGE -->
+    <div class="page" id="page-simulator">
+      <div class="page-header">
+        <div class="page-tag">PRACTICE MODE</div>
+        <h2 class="page-title">Trade Risk-Free in Our <span class="highlight">Live Simulator</span></h2>
+        <p class="page-description">
+          Practice trading with real market data and virtual money. Perfect your strategies before risking real capital.
+        </p>
+      </div>
+
+      <div class="simulator-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Live Market Chart</span>
+            <span class="panel-value" id="simPrice">22,420</span>
+          </div>
+
+          <canvas id="simChart"></canvas>
+
+          <div class="sim-tabs">
+            <button class="sim-tab active" onclick="switchTimeframe(this, '1D')">1 Day</button>
+            <button class="sim-tab" onclick="switchTimeframe(this, '1W')">1 Week</button>
+            <button class="sim-tab" onclick="switchTimeframe(this, '1M')">1 Month</button>
+            <button class="sim-tab" onclick="switchTimeframe(this, '3M')">3 Months</button>
+          </div>
+
+          <div class="order-form">
+            <div class="form-group">
+              <label class="form-label">Stock Symbol</label>
+              <input type="text" class="form-input" id="orderSymbol" value="RELIANCE" placeholder="Enter symbol">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Quantity</label>
+                <input type="number" class="form-input" id="orderQty" value="10" min="1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Price (₹)</label>
+                <input type="number" class="form-input" id="orderPrice" value="2847" step="0.01">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <button class="btn-buy" onclick="placeOrder('BUY')">BUY</button>
+              <button class="btn-sell" onclick="placeOrder('SELL')">SELL</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Your Portfolio</span>
+          </div>
+
+          <div class="portfolio-stats">
+            <div class="portfolio-item">
+              <div class="portfolio-label">Account Balance</div>
+              <div class="portfolio-value" id="balance">₹4,54,750</div>
+            </div>
+
+            <div class="portfolio-item">
+              <div class="portfolio-label">Total Invested</div>
+              <div class="portfolio-value">₹45,250</div>
+              <div class="portfolio-subtext">9.05% of balance</div>
+            </div>
+
+            <div class="portfolio-item">
+              <div class="portfolio-label">Current P&L</div>
+              <div class="portfolio-value">₹0</div>
+              <div class="portfolio-subtext">0.00%</div>
+            </div>
+
+            <div class="portfolio-item">
+              <div class="portfolio-label">Today's Trades</div>
+              <div class="portfolio-value">0</div>
+            </div>
+
+            <div class="portfolio-item">
+              <div class="portfolio-label">Win Rate</div>
+              <div class="portfolio-value">0%</div>
+              <div class="portfolio-subtext">No trades yet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI CHAT PAGE -->
+    <div class="page" id="page-chat">
+      <div class="page-header">
+        <div class="page-tag">AI ASSISTANT</div>
+        <h2 class="page-title">Chat with <span class="highlight">StockSense AI</span></h2>
+        <p class="page-description">
+          Get instant answers to your trading questions, market analysis, and personalized investment advice.
+        </p>
+      </div>
+
+      <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+          <div class="message ai">
+            👋 Hello! I'm your AI trading assistant. Ask me anything about stocks, trading strategies, market analysis, or investment tips. How can I help you today?
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <div class="chat-input-wrapper">
+            <input 
+              type="text" 
+              class="chat-input" 
+              id="chatInput" 
+              placeholder="Ask about stocks, strategies, or market trends..."
+              onkeypress="if(event.key === 'Enter') sendMessage()"
+            >
+            <button class="chat-send" onclick="sendMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ========== PAGE NAVIGATION ==========
+function switchPage(pageName) {
+  // Remove active class from all pages and nav links
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  
+  // Add active class to selected page and nav link
+  document.getElementById('page-' + pageName).classList.add('active');
+  event.target.classList.add('active');
+
+  // Trigger chart redraw if needed
+  if (pageName === 'simulator') {
+    setTimeout(() => {
+      resizeSimChart();
+      drawSimChart();
+    }, 100);
+  } else if (pageName === 'home') {
+    setTimeout(() => {
+      resizeHomeChart();
+      drawHomeChart();
+    }, 100);
+  }
+}
+
+// ========== TICKER ==========
+const stocks = [
+  ['RELIANCE', '₹2,847', '▲ +1.24%', true],
+  ['TCS', '₹3,520', '▲ +0.87%', true],
+  ['INFY', '₹1,456', '▼ -0.45%', false],
+  ['HDFC', '₹1,623', '▲ +2.11%', true],
+  ['WIPRO', '₹478', '▼ -0.32%', false],
+  ['SENSEX', '74,205', '▲ +358', true],
+  ['NIFTY50', '22,530', '▲ +112', true],
+  ['BAJFINANCE', '₹6,820', '▲ +1.65%', true],
+  ['LT', '₹3,210', '▲ +1.02%', true],
+  ['TATAMOTORS', '₹942', '▼ -0.78%', false]
+];
+
+const tickerHTML = [...stocks, ...stocks].map(([symbol, price, change, isUp]) => `
+  <div class="ticker-item">
+    <span class="ticker-symbol">${symbol}</span>
+    <span class="ticker-price">${price}</span>
+    <span class="ticker-change ${isUp ? 'up' : 'down'}">${change}</span>
+  </div>
+`).join('');
+
+document.getElementById('ticker').innerHTML = tickerHTML;
+
+// ========== STATS COUNTER ANIMATION ==========
+function animateCounter(id, target, suffix = '', duration = 2000) {
+  const element = document.getElementById(id);
+  let startTime = null;
+  
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const progress = Math.min((timestamp - startTime) / duration, 1);
+    const value = Math.round(progress * target);
+    
+    element.textContent = (id === 'stat-4' ? '₹' : '') + 
+                          value.toLocaleString('en-IN') + suffix;
+    
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  }
+  
+  requestAnimationFrame(step);
+}
+
+setTimeout(() => {
+  animateCounter('stat-1', 12500, '+', 2200);
+  animateCounter('stat-2', 48, '+', 1600);
+  animateCounter('stat-3', 98, '%', 1900);
+  animateCounter('stat-4', 5, 'L+', 1700);
+}, 500);
+
+// ========== HOME CHART ==========
+const homeCanvas = document.getElementById('homeChart');
+const homeCtx = homeCanvas.getContext('2d');
+const dpr = window.devicePixelRatio || 1;
+
+let homeData = [];
+let homeBase = 22420;
+
+function resizeHomeChart() {
+  homeCanvas.width = homeCanvas.offsetWidth * dpr;
+  homeCanvas.height = 140 * dpr;
+  homeCanvas.style.height = '140px';
+}
+
+function drawHomeChart() {
+  const W = homeCanvas.width;
+  const H = homeCanvas.height;
+  
+  homeCtx.clearRect(0, 0, W, H);
+  
+  if (homeData.length === 0) return;
+  
+  const min = Math.min(...homeData) - 100;
+  const max = Math.max(...homeData) + 100;
+  const range = max - min;
+  
+  // Grid lines
+  homeCtx.strokeStyle = 'rgba(0, 255, 157, 0.05)';
+  homeCtx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = (i / 4) * H;
+    homeCtx.beginPath();
+    homeCtx.moveTo(0, y);
+    homeCtx.lineTo(W, y);
+    homeCtx.stroke();
+  }
+  
+  // Gradient fill
+  const gradient = homeCtx.createLinearGradient(0, 0, 0, H);
+  gradient.addColorStop(0, 'rgba(0, 255, 157, 0.3)');
+  gradient.addColorStop(1, 'rgba(0, 255, 157, 0)');
+  
+  homeCtx.beginPath();
+  homeData.forEach((price, i) => {
+    const x = (i / (homeData.length - 1)) * W;
+    const y = H - ((price - min) / range) * H;
+    i === 0 ? homeCtx.moveTo(x, y) : homeCtx.lineTo(x, y);
+  });
+  homeCtx.lineTo(W, H);
+  homeCtx.lineTo(0, H);
+  homeCtx.closePath();
+  homeCtx.fillStyle = gradient;
+  homeCtx.fill();
+  
+  // Line
+  homeCtx.beginPath();
+  homeData.forEach((price, i) => {
+    const x = (i / (homeData.length - 1)) * W;
+    const y = H - ((price - min) / range) * H;
+    i === 0 ? homeCtx.moveTo(x, y) : homeCtx.lineTo(x, y);
+  });
+  homeCtx.strokeStyle = '#00ff9d';
+  homeCtx.lineWidth = 3 * dpr;
+  homeCtx.shadowColor = '#00ff9d';
+  homeCtx.shadowBlur = 10;
+  homeCtx.stroke();
+  homeCtx.shadowBlur = 0;
+}
+
+// Initialize home chart
+resizeHomeChart();
+for (let i = 0; i < 60; i++) {
+  homeBase += (Math.random() - 0.48) * 20;
+  homeData.push(homeBase);
+}
+drawHomeChart();
+
+// Update home chart
+setInterval(() => {
+  homeBase += (Math.random() - 0.47) * 15;
+  homeData.push(homeBase);
+  if (homeData.length > 60) homeData.shift();
+  drawHomeChart();
+  
+  const change = homeBase - 22420;
+  const pct = ((change / 22420) * 100).toFixed(2);
+  
+  document.getElementById('homePrice').textContent = Math.round(homeBase).toLocaleString('en-IN');
+  
+  const changeEl = document.getElementById('homeChange');
+  if (change >= 0) {
+    changeEl.textContent = `▲ +${Math.round(change)} (+${pct}%)`;
+    changeEl.className = 'price-change positive';
+  } else {
+    changeEl.textContent = `▼ ${Math.round(change)} (${pct}%)`;
+    changeEl.className = 'price-change negative';
+  }
+}, 1200);
+
+// ========== SIMULATOR CHART ==========
+const simCanvas = document.getElementById('simChart');
+const simCtx = simCanvas.getContext('2d');
+
+let simData = [];
+let simBase = 22420;
+
+function resizeSimChart() {
+  simCanvas.width = simCanvas.offsetWidth * dpr;
+  simCanvas.height = 200 * dpr;
+  simCanvas.style.height = '200px';
+}
+
+function drawSimChart() {
+  const W = simCanvas.width;
+  const H = simCanvas.height;
+  
+  simCtx.clearRect(0, 0, W, H);
+  
+  if (simData.length === 0) return;
+  
+  const min = Math.min(...simData) - 100;
+  const max = Math.max(...simData) + 100;
+  const range = max - min;
+  
+  // Grid
+  simCtx.strokeStyle = 'rgba(0, 255, 157, 0.05)';
+  simCtx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const y = (i / 5) * H;
+    simCtx.beginPath();
+    simCtx.moveTo(0, y);
+    simCtx.lineTo(W, y);
+    simCtx.stroke();
+  }
+  
+  // Gradient
+  const gradient = simCtx.createLinearGradient(0, 0, 0, H);
+  gradient.addColorStop(0, 'rgba(0, 255, 157, 0.25)');
+  gradient.addColorStop(1, 'rgba(0, 255, 157, 0)');
+  
+  simCtx.beginPath();
+  simData.forEach((price, i) => {
+    const x = (i / (simData.length - 1)) * W;
+    const y = H - ((price - min) / range) * H;
+    i === 0 ? simCtx.moveTo(x, y) : simCtx.lineTo(x, y);
+  });
+  simCtx.lineTo(W, H);
+  simCtx.lineTo(0, H);
+  simCtx.closePath();
+  simCtx.fillStyle = gradient;
+  simCtx.fill();
+  
+  // Line
+  simCtx.beginPath();
+  simData.forEach((price, i) => {
+    const x = (i / (simData.length - 1)) * W;
+    const y = H - ((price - min) / range) * H;
+    i === 0 ? simCtx.moveTo(x, y) : simCtx.lineTo(x, y);
+  });
+  simCtx.strokeStyle = '#00ff9d';
+  simCtx.lineWidth = 3 * dpr;
+  simCtx.shadowColor = '#00ff9d';
+  simCtx.shadowBlur = 10;
+  simCtx.stroke();
+  simCtx.shadowBlur = 0;
+}
+
+resizeSimChart();
+for (let i = 0; i < 80; i++) {
+  simBase += (Math.random() - 0.48) * 25;
+  simData.push(simBase);
+}
+drawSimChart();
+
+setInterval(() => {
+  simBase += (Math.random() - 0.47) * 15;
+  simData.push(simBase);
+  if (simData.length > 80) simData.shift();
+  drawSimChart();
+  
+  document.getElementById('simPrice').textContent = Math.round(simBase).toLocaleString('en-IN');
+}, 1200);
+
+// ========== SIMULATOR FUNCTIONS ==========
+function switchTimeframe(button, timeframe) {
+  document.querySelectorAll('.sim-tab').forEach(b => b.classList.remove('active'));
+  button.classList.add('active');
+  
+  // Randomize data for different timeframes
+  simData = [];
+  simBase = 22420;
+  for (let i = 0; i < 80; i++) {
+    simBase += (Math.random() - 0.48) * 30;
+    simData.push(simBase);
+  }
+  drawSimChart();
+}
+
+let balance = 454750;
+
+function placeOrder(type) {
+  const symbol = document.getElementById('orderSymbol').value || 'RELIANCE';
+  const qty = parseInt(document.getElementById('orderQty').value) || 1;
+  const price = parseFloat(document.getElementById('orderPrice').value) || 2847;
+  const total = qty * price;
+  
+  if (type === 'BUY') {
+    if (total > balance) {
+      showToast('❌ Insufficient balance');
+      return;
+    }
+    balance -= total;
+    showToast(`✅ BOUGHT ${qty}x ${symbol} @ ₹${price.toLocaleString('en-IN')}`);
+  } else {
+    balance += total;
+    showToast(`✅ SOLD ${qty}x ${symbol} @ ₹${price.toLocaleString('en-IN')}`);
+  }
+  
+  document.getElementById('balance').textContent = '₹' + balance.toLocaleString('en-IN');
+}
+
+// ========== AI CHAT ==========
+const aiResponses = [
+  'Based on current RSI and MACD signals, this looks like a strong buying opportunity near support levels. I recommend setting your stop-loss 3% below entry for risk management. 📊',
+  'Diversification is crucial for long-term success. Avoid concentrating more than 10% of your portfolio in any single stock. Consider adding index funds for stability alongside direct equities. 💡',
+  'The P/E ratio compares a company\'s stock price to its earnings per share. A lower P/E might indicate undervaluation, but always benchmark against industry averages before making decisions. 🎯',
+  'F&O trading involves significant leverage and risk. I strongly recommend practicing in our simulator for at least 3 months before trading with real capital. Consistency beats speed! 🏆',
+  'The Nifty 50 is consolidating near the 22,500 support zone. A decisive break above 22,700 could trigger a fresh rally. Keep a close watch on FII flows and global cues. 📈',
+  'Technical indicators work best when combined with fundamental analysis. Look at the company\'s earnings growth, debt levels, and competitive positioning before entering a position. 💎',
+  'Risk management is more important than picking winners. Use proper position sizing (2-3% per trade), maintain stop-losses, and never risk more than you can afford to lose. 🛡️',
+  'Market sentiment can change quickly. Stay informed about macroeconomic factors, interest rate decisions, and global market trends that might impact Indian markets. 🌍'
+];
+
+let aiIndex = 0;
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  
+  if (!message) return;
+  
+  const messagesDiv = document.getElementById('chatMessages');
+  
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'message user';
+  userMsg.textContent = message;
+  messagesDiv.appendChild(userMsg);
+  
+  input.value = '';
+  
+  // Add typing indicator
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'typing-indicator';
+  typingDiv.id = 'typing';
+  typingDiv.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  messagesDiv.appendChild(typingDiv);
+  
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  
+  // Simulate AI response
+  setTimeout(() => {
+    document.getElementById('typing').remove();
+    
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'message ai';
+    aiMsg.textContent = aiResponses[aiIndex % aiResponses.length];
+    messagesDiv.appendChild(aiMsg);
+    
+    aiIndex++;
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }, 1500);
+}
+
+// ========== TOAST NOTIFICATIONS ==========
+function showToast(message) {
+  const existingToast = document.querySelector('.toast');
+  if (existingToast) existingToast.remove();
+  
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.getElementById('app').appendChild(toast);
+  
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// ========== RESPONSIVE HANDLING ==========
+window.addEventListener('resize', () => {
+  resizeHomeChart();
+  drawHomeChart();
+  resizeSimChart();
+  drawSimChart();
+});
+</script>
+</body>
+</html>
